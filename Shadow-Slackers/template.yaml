@@ -12,15 +12,15 @@ Globals:
     MemorySize: 128
 
 Resources:
-  AccountTable:
+  AccountsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: AccountTable
+      TableName: AccountsTable
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: email
           AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: email
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
@@ -91,7 +91,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
-                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/AccountTable"
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/AccountsTable"
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

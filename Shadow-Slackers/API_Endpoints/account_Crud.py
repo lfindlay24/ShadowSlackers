@@ -1,9 +1,10 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
+import re
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('AccountTable')
+table = dynamodb.Table('AccountsTable')
 
 def lambda_handler(event, context):
 
@@ -26,9 +27,8 @@ def lambda_handler(event, context):
         }
 
 def get(event, context):
-    # Example: Get item by primary key
-    key = event['queryStringParameters']['id']  # Assuming 'id' is the primary key
-    response = table.get_item(Key={'id': key})
+    key = event['queryStringParameters']['email']
+    response = table.get_item(Key={'email': key})
     item = response.get('Item', {})
 
     return {
@@ -37,12 +37,28 @@ def get(event, context):
     }
 
 def post(event, context):
-    # Example: Add a new item
     body = event['body']
     if isinstance(body, str):
         item = json.loads(body)
     else:
         item = body
+
+    if 'email' not in item or 'password' not in item:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "message": "Email and password are required"
+            }),
+        }
+
+    if not is_valid_email(item.get('email')):
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "message": "Invalid email"
+            }),
+        }
+    
     table.put_item(Item=item)
 
     return {
@@ -54,11 +70,24 @@ def post(event, context):
     }
 
 def put(event, context):
-    # Example: Update an existing item
-    item = json.loads(event['body'])
-    key = {'id': item['id']}  # Assuming 'id' is the primary key
-    update_expression = "set info = :info"  # Example update expression
-    expression_attribute_values = {':info': item['info']}  # Example attribute values
+    body = event['body']
+    if isinstance(body, str):
+        item = json.loads(body)
+    else:
+        item = body
+    
+    key = {'email': item['email']}
+    update_expression = "set password = :password"
+    expression_attribute_values = {':password': item['password']}
+
+    response = table.get_item(Key=key)
+    if 'Item' not in response:
+        return {
+            "statusCode": 404,
+            "body": json.dumps({
+                "message": "Can't update item. Item not found"
+            }),
+        }
 
     table.update_item(
         Key=key,
@@ -69,15 +98,14 @@ def put(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "Item updated successfully",
+            "message": "Password updated successfully",
             "item": item
         }),
     }
 
 def delete(event, context):
-    # Example: Delete an item by primary key
-    key = event['queryStringParameters']['id']  # Assuming 'id' is the primary key
-    table.delete_item(Key={'id': key})
+    key = event['queryStringParameters']['email']
+    table.delete_item(Key={'email': key})
 
     return {
         "statusCode": 200,
@@ -85,3 +113,6 @@ def delete(event, context):
             "message": "Item deleted successfully"
         }),
     }
+
+def is_valid_email(email):
+    return re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
