@@ -69,6 +69,21 @@ Resources:
             Path: /account
             Method: delete
       Role: !GetAtt AccountCrudFunctionRole.Arn
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: API_Endpoints/
+      Handler: login_Endpoints.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        Login:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: post
+      Role: !GetAtt LoginFunctionRole.Arn
 
   AccountCrudFunctionRole:
     Type: AWS::IAM::Role
@@ -91,6 +106,26 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/AccountsTable"
+    
+  LoginFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AccountCrudFunctionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
                 Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/AccountsTable"
 
 Outputs:
