@@ -29,6 +29,9 @@ export default function Navbar({ userEmail, logout }) {
                     {userEmail ? (
                         <>
                             <span className="text-white">{userEmail}</span>
+                            <Link to='/schedule' className='text-white hover:underline'>
+                                Schedule
+                            </Link>
                             <button onClick={logout} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>
                                 Logout
                             </button>
