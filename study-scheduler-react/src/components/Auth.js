@@ -13,7 +13,7 @@ export default function Auth({ type, onAuth }) {
         e.preventDefault();
         console.log(`${type} form submitted with data:`, formData);
 
-        onAuth(formData);
+        onAuth(formData.email);
         navigate('/');
     };
 

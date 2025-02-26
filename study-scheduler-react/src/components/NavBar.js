@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Navbar({ isAuthenticated, logout }) {
+export default function Navbar({ userEmail, logout }) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -23,9 +23,16 @@ export default function Navbar({ isAuthenticated, logout }) {
                         isOpen ? "block" : "hidden"
                     } md:block`}
                 >
-                    <Link to='/' className='text-white hover:underline'>Home</Link>
-                    {isAuthenticated ? (
-                        <button onClick={logout} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>Logout</button>
+                    <Link to='/' className='text-white hover:underline'>
+                        Home
+                    </Link>
+                    {userEmail ? (
+                        <>
+                            <span className="text-white">{userEmail}</span>
+                            <button onClick={logout} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>
+                                Logout
+                            </button>
+                        </>
                     ) : (
                         <>
                             <Link to='/login' className='text-white hover:underline'>Login</Link>
