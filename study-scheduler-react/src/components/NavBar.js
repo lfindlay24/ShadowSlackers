@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Navbar() {
+export default function Navbar({ isAuthenticated, logout }) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -24,8 +24,14 @@ export default function Navbar() {
                     } md:block`}
                 >
                     <Link to='/' className='text-white hover:underline'>Home</Link>
-                    <Link to='/login' className='text-white hover:underline'>Login</Link>
-                    <Link to='/signup' className='text-white hover:underline'>Sign Up</Link>
+                    {isAuthenticated ? (
+                        <button onClick={logout} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>Logout</button>
+                    ) : (
+                        <>
+                            <Link to='/login' className='text-white hover:underline'>Login</Link>
+                            <Link to='/signup' className='text-white hover:underline'>Sign Up</Link>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

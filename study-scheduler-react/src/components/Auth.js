@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Auth({ type }) {
+export default function Auth({ type, onAuth }) {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
 
@@ -11,10 +11,10 @@ export default function Auth({ type }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        navigate('/');
+        console.log(`${type} form submitted with data:`, formData);
 
-        // API call will go here later
+        onAuth(formData);
+        navigate('/');
     };
 
     return (
