@@ -8,7 +8,7 @@ export default function Home() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md text-center w-96">
                 <h1 className="text-3xl font-bold text-blue-600 mb-4">
-                    Find a study Room
+                    Find a Study Room
                 </h1>
                 <p className="text-gray-600 mb-6">
                     Search for available study rooms on campus
