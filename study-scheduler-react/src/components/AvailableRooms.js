@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const mockRooms = [
     { roomNumber: "010", day: "Monday", availableFrom: 8, until: 10.5 },
@@ -8,16 +8,17 @@ const mockRooms = [
     { roomNumber: "312", day: "Friday", availableFrom: 8, until: 11 }
 ]
 
+const formatTime = (time) => {
+    const hour = Math.floor(time);
+    const minute = time % 1 === 0.5 ? "30" : "00";
+    const period = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour > 12 ? hour - 12 : hour;
+    return `${formattedHour}:${minute} ${period}`;
+};
+
 const AvailableRooms = () => {
     const { day, startTime, endTime } = useParams();
-
-    const formatTime = (time) => {
-        const hour = Math.floor(time);
-        const minute = time % 1 === 0.5 ? "30" : "00";
-        const period = hour >= 12 ? "PM" : "AM";
-        const formattedHour = hour > 12 ? hour - 12 : hour;
-        return `${formattedHour}:${minute} ${period}`;
-    };
+    const navigate = useNavigate();
 
     const availableRooms = mockRooms.filter(
         (room) =>
@@ -27,7 +28,7 @@ const AvailableRooms = () => {
     );
 
     return (
-        <div className='min-h-screen p-6 bg-gray-100'>
+        <div className='min-h-screen flex flex-col items-center justify-center p-6 bg-gray-100'>
             <h1 className='text-3xl font-bold text-center text-blue-600 mb-4'>
                 Available Rooms
             </h1>
@@ -52,6 +53,15 @@ const AvailableRooms = () => {
                         No available rooms for this time slot.
                     </p>
                 )}
+            </div>
+
+            <div className='mt-6 text-center'>
+                <button
+                    onClick={() => navigate('/search')}
+                    className='bg-gray-500 text-white py-2 px-6 rounded hover:bg-gray-600 text-lg'
+                >
+                    Back to Search
+                </button>
             </div>
         </div>
     );
