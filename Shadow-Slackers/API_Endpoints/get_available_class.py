@@ -17,14 +17,14 @@ class classroomSchedule:
         for day in days.split(","):
             if day not in self.schedule:
                 raise ValueError(f"Invalid day: {day}")
-            if not self.isAvailable(startTime, endTime):
+            if not self.isAvailable(startTime, endTime, day):
                 raise ValueError(f"Class {className} conflicts with existing schedule")
             self.schedule[day].append((className, startTime, endTime))
             self.schedule[day].sort(key=lambda x: x[1])  # Sort by start time
 
     def isAvailable(self, startTime, endTime, day):
-        for _, start, end, days in self.schedule[day]:
-            if (startTime <= end and start <= endTime):
+        for _, start, end in self.schedule[day]:
+            if (startTime < end and start < endTime):
                 return False
         return True
     
@@ -65,7 +65,7 @@ def getAvailableClass(event, context):
     availableRooms = []
 
     for classroom in classroomList:
-        if classroom.isAvailable(timeStart, timeEnd):
+        if classroom.isAvailable(timeStart, timeEnd, day):
             availableRooms.append(classroom.roomNum)
 
     if len(availableRooms) == 0:
@@ -74,8 +74,8 @@ def getAvailableClass(event, context):
             "body": json.dumps({
                 "message": "No available rooms",
                 "day": day,
-                "startTime": startTime,
-                "endTime": endTime
+                "startTime": timeStart,
+                "endTime": timeEnd
             }),
         }
     else:
@@ -85,7 +85,7 @@ def getAvailableClass(event, context):
                 "message": "Available rooms found",
                 "availableRooms": availableRooms,
                 "day": day,
-                "startTime": startTime,
-                "endTime": endTime
+                "startTime": timeStart,
+                "endTime": timeEnd
             }),
         }
