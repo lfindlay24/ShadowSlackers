@@ -26,6 +26,9 @@ export default function Navbar({ userEmail, logout }) {
                     <Link to='/' className='text-white hover:underline'>
                         Home
                     </Link>
+                    <Link to='/search' className='text-white hover:underline'>
+                        Search For A Room
+                    </Link>
                     {userEmail ? (
                         <>
                             <span className="text-white">{userEmail}</span>
