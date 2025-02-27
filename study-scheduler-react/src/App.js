@@ -5,6 +5,7 @@ import Auth from './components/Auth';
 import Home from './components/Home';
 import NavBar from './components/NavBar';
 import Schedule from './components/Schedule';
+import AvailableRooms from './components/AvailableRooms';
 
 function App() {
   const [userEmail, setUserEmail] = useState(null);
@@ -34,6 +35,7 @@ function App() {
         <Route path="/login" element={<Auth type="login" onAuth={login} />} />
         <Route path="/signup" element={<Auth type="signup" onAuth={login} />} />
         <Route path="/schedule" element={<Schedule />} />
+        <Route path="/:day/:startTime/:endTime" element={<AvailableRooms />} />
       </Routes>
     </Router>
   );
