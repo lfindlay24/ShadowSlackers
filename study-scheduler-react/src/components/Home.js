@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -13,14 +13,12 @@ export default function Home() {
                 <p className="text-gray-600 mb-6">
                     Search for available study rooms on campus
                 </p>
-                <input
-                    type="text"
-                    placeholder="Search for a room..."
-                    className="w-full p-2 mb-4 border rounded"
-                />
-                <button className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-                    Search
-                </button>
+                <Link
+                    to="/search"
+                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                >
+                    Search For A Room
+                </Link>
                 <div className="mt-4">
                     <p className='text-sm'>New here?</p>
                     <button
