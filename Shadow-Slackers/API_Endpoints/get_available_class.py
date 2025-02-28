@@ -1,10 +1,17 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
-from Models.classroomSchedule import classroomSchedule
+from classroomSchedule import classroomSchedule
+from decimal import Decimal
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('ClassroomsTable')
+table = dynamodb.Table('ClassroomTable')
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
 
 def getAvailableClass(event, context):
     body = event['body']
@@ -49,7 +56,7 @@ def getAvailableClass(event, context):
                 "day": day,
                 "startTime": timeStart,
                 "endTime": timeEnd
-            }),
+            }, cls=JSONEncoder),
         }
     else:
         return {
@@ -60,5 +67,5 @@ def getAvailableClass(event, context):
                 "day": day,
                 "startTime": timeStart,
                 "endTime": timeEnd
-            }),
+            }, cls=JSONEncoder),
         }

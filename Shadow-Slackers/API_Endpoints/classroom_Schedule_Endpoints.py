@@ -1,29 +1,28 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
-from Models.classroomSchedule import classroomSchedule
+from classroomSchedule import classroomSchedule
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('ClassroomsTable')
+table = dynamodb.Table('ClassroomTable')
 
 def lambda_handler(event, context):
+    http_method = event.get("httpMethod")
     
-        http_method = event.get("httpMethod")
-    
-        if http_method == "POST":
-            if not event['pathParameters']['roomNum']:
-                return addClassToClassroom(event, context)
-            else:
-                return addClassroom(event, context)
-        elif http_method == "GET":
-            return getAllClassrooms(event, context)
+    if http_method == "POST":
+        if 'pathParameters' in event and 'roomNum' in event['pathParameters']:
+            return addClassroom(event, context)
         else:
-            return {
-                "statusCode": 405,
-                "body": json.dumps({
-                    "message": "Method Not Allowed"
-                }),
-            }
+            return addClassToClassroom(event, context)
+    elif http_method == "GET":
+        return getAllClassrooms(event, context)
+    else:
+        return {
+            "statusCode": 405,
+            "body": json.dumps({
+                "message": "Method Not Allowed"
+            }),
+        }
         
 def addClassroom(event, context): 
     roomNum = event['pathParameters']['roomNum']

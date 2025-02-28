@@ -26,15 +26,15 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  ClassroomsTable:
+  ClassroomTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ClassroomsTable
+      TableName: ClassroomTable
       AttributeDefinitions:
-        - AttributeName: roomNumber
-          AttributeType: N
+        - AttributeName: roomNum
+          AttributeType: S
       KeySchema:
-        - AttributeName: roomNumber
+        - AttributeName: roomNum
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
@@ -202,7 +202,8 @@ Resources:
               - Effect: Allow
                 Action:
                   - dynamodb:GetItem
-                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomsTable"
+                  - dynamodb:Scan
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomTable"
 
   ClassroomCrudFunctionRole:
     Type: AWS::IAM::Role
@@ -226,7 +227,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
-                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomsTable"
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomTable"
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
