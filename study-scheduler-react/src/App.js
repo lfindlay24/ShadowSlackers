@@ -8,6 +8,8 @@ import Schedule from './components/Schedule';
 import AvailableRooms from './components/AvailableRooms';
 import SearchAvailableRooms from './components/SearchAvailableRooms';
 
+const API_URL = 'https://8686iopxal.execute-api.us-east-2.amazonaws.com/Stage';
+
 function App() {
   const [userEmail, setUserEmail] = useState(null);
 
@@ -18,7 +20,11 @@ function App() {
     }
   }, []);
 
-  const login = (email) => {
+  const signUp = (email, password) => {
+    
+  }
+
+  const login = (email, password) => {
     localStorage.setItem("userEmail", email);
     setUserEmail(email);
   };
