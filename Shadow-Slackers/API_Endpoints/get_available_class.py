@@ -1,33 +1,12 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
+from classroomSchedule import classroomSchedule
+from decimal import Decimal
 
-class classroomSchedule: 
-    def __init__(self, roomNum):
-        self.roomNum = roomNum
-        self.schedule = {
-            "Monday": [],
-            "Tuesday": [],
-            "Wednesday": [],
-            "Thursday": [],
-            "Friday": []
-        }
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('ClassroomTable')
 
-    def addClass(self, className, startTime, endTime, days):
-        for day in days.split(","):
-            if day not in self.schedule:
-                raise ValueError(f"Invalid day: {day}")
-            if not self.isAvailable(startTime, endTime, day):
-                raise ValueError(f"Class {className} conflicts with existing schedule")
-            self.schedule[day].append((className, startTime, endTime))
-            self.schedule[day].sort(key=lambda x: x[1])  # Sort by start time
-
-    def isAvailable(self, startTime, endTime, day):
-        for _, start, end in self.schedule[day]:
-            if (startTime < end and start < endTime):
-                return False
-        return True
-    
 def getAvailableClass(event, context):
     body = event['body']
     if isinstance(body, str):
@@ -47,24 +26,19 @@ def getAvailableClass(event, context):
     timeStart = item['timeStart']
     timeEnd = item['timeEnd']
 
-    # Create a classroom schedule using a fake for now until we can get the data from the database
-    classroom = classroomSchedule(101)
-    classroom2 = classroomSchedule(102)
+    response = table.scan()
+    classroomList = response['Items']
 
-    # Add some classes to the schedule (this would normally come from a database)
-    classroom.addClass("Math", 9, 11, "Monday")
-    classroom.addClass("Science", 11, 13, "Monday")
-    classroom.addClass("History", 14, 16, "Monday")
+    classroomObjects = []
+    for classroom in classroomList:
+        classroomObj = classroomSchedule(classroom['roomNum'])
+        classroomObj.fromJSON(classroom)
+        classroomObjects.append(classroomObj)
 
-    classroom2.addClass("Math", 8, 9, "Monday")
-    classroom2.addClass("Science", 9, 10, "Monday")
-    classroom2.addClass("History", 14, 16, "Monday")
-
-    classroomList = [classroom, classroom2]
 
     availableRooms = []
 
-    for classroom in classroomList:
+    for classroom in classroomObjects:
         if classroom.isAvailable(timeStart, timeEnd, day):
             availableRooms.append(classroom.roomNum)
 
