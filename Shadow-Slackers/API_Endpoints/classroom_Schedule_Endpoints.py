@@ -2,15 +2,24 @@ import json
 import boto3
 from boto3.dynamodb.conditions import Key
 from classroomSchedule import classroomSchedule
+from decimal import Decimal
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ClassroomTable')
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return super(DecimalEncoder, self).default(obj)
+
+json.JSONEncoder.default = DecimalEncoder().default
 
 def lambda_handler(event, context):
     http_method = event.get("httpMethod")
     
     if http_method == "POST":
-        if 'pathParameters' in event and 'roomNum' in event['pathParameters']:
+        if event.get('pathParameters') and 'roomNum' in event['pathParameters']:
             return addClassroom(event, context)
         else:
             return addClassToClassroom(event, context)
@@ -88,11 +97,18 @@ def addClassToClassroom(event, context):
     
     table.put_item(Item=classroom.toJSON())
 
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": "Class added successfully"
+        }),
+    }
+
 def getAllClassrooms(event, context):
     response = table.scan()
     classrooms = response['Items']
     return {
         "statusCode": 200,
-        "body": json.dumps(classrooms)
+        "body": json.dumps(classrooms, cls=DecimalEncoder),
     }
 

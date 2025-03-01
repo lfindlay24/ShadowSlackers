@@ -7,12 +7,6 @@ from decimal import Decimal
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ClassroomTable')
 
-class JSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return float(obj)
-        return json.JSONEncoder.default(self, obj)
-
 def getAvailableClass(event, context):
     body = event['body']
     if isinstance(body, str):
@@ -56,7 +50,7 @@ def getAvailableClass(event, context):
                 "day": day,
                 "startTime": timeStart,
                 "endTime": timeEnd
-            }, cls=JSONEncoder),
+            }),
         }
     else:
         return {
@@ -67,5 +61,5 @@ def getAvailableClass(event, context):
                 "day": day,
                 "startTime": timeStart,
                 "endTime": timeEnd
-            }, cls=JSONEncoder),
+            }),
         }
