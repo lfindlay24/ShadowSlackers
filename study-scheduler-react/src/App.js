@@ -7,8 +7,7 @@ import NavBar from './components/NavBar';
 import Schedule from './components/Schedule';
 import AvailableRooms from './components/AvailableRooms';
 import SearchAvailableRooms from './components/SearchAvailableRooms';
-
-const API_URL = 'https://8686iopxal.execute-api.us-east-2.amazonaws.com/Stage';
+import { login, signup } from './components/Api';
 
 function App() {
   const [userEmail, setUserEmail] = useState(null);
@@ -20,11 +19,14 @@ function App() {
     }
   }, []);
 
-  const signUp = (email, password) => {
-    
+  const handleSignUp = (email, password) => {
+    return signup(email, password);
   }
 
-  const login = (email, password) => {
+  const handleLogin = (email, password) => {
+    login(email, password).then((response) => {
+      console.log('Login response:', response);
+    });
     localStorage.setItem("userEmail", email);
     setUserEmail(email);
   };
@@ -39,8 +41,8 @@ function App() {
       <NavBar userEmail={userEmail} logout={logout} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Auth type="login" onAuth={login} />} />
-        <Route path="/signup" element={<Auth type="signup" onAuth={login} />} />
+        <Route path="/login" element={<Auth type="login" onAuth={handleLogin} />} />
+        <Route path="/signup" element={<Auth type="signup" onAuth={handleSignUp} />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/search" element={<SearchAvailableRooms />} />
         <Route path="/:day/:startTime/:endTime" element={<AvailableRooms />} />

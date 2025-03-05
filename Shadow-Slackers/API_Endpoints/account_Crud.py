@@ -21,6 +21,11 @@ def lambda_handler(event, context):
     else:
         return {
             "statusCode": 405,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Method Not Allowed"
             }),
@@ -33,6 +38,11 @@ def get(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps(item),
     }
 
@@ -46,6 +56,11 @@ def post(event, context):
     if 'email' not in item or 'password' not in item:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Email and password are required"
             }),
@@ -54,6 +69,11 @@ def post(event, context):
     if not is_valid_email(item.get('email')):
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Invalid email"
             }),
@@ -63,6 +83,11 @@ def post(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Item added successfully",
             "item": item
@@ -84,6 +109,11 @@ def put(event, context):
     if 'Item' not in response:
         return {
             "statusCode": 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Can't update item. Item not found"
             }),
@@ -97,6 +127,11 @@ def put(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Password updated successfully",
             "item": item
@@ -109,6 +144,11 @@ def delete(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Item deleted successfully"
         }),

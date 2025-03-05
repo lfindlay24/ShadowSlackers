@@ -40,8 +40,17 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1  
 
+  SchedulerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Cors:
+        AllowOrigin: "'*'"
+        AllowMethods: "'OPTIONS, GET, POST, PUT, DELETE'"
+        AllowHeaders: "'Content-Type,Authorization'"
+
   HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
@@ -50,10 +59,12 @@ Resources:
         - x86_64
       Events:
         HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /hello
             Method: get
+
   AccountCrudFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -66,24 +77,29 @@ Resources:
         GetAccount:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /account
             Method: get
         PostAccount:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /account
             Method: post
         PutAccount:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /account
             Method: put
         DeleteAccount:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /account
             Method: delete
       Role: !GetAtt AccountCrudFunctionRole.Arn
+
   LoginFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -96,9 +112,11 @@ Resources:
         Login:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /login
             Method: post
       Role: !GetAtt LoginFunctionRole.Arn
+
   GetAvailableClassFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -111,9 +129,11 @@ Resources:
         GetAvailableClass:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /getAvailableClass
             Method: get
       Role: !GetAtt GetAvailableClassFunctionRole.Arn
+
 
   AccountCrudFunctionRole:
     Type: AWS::IAM::Role
@@ -178,16 +198,16 @@ Resources:
                   - dynamodb:GetItem
                 Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomsTable"
 
-Outputs:
+# Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  # HelloWorldApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+  #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  # HelloWorldFunction:
+  #   Description: "Hello World Lambda Function ARN"
+  #   Value: !GetAtt HelloWorldFunction.Arn
+  # HelloWorldFunctionIamRole:
+  #   Description: "Implicit IAM Role created for Hello World function"
+  #   Value: !GetAtt HelloWorldFunctionRole.Arn
