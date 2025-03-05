@@ -26,15 +26,15 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  ClassroomsTable:
+  ClassroomTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ClassroomsTable
+      TableName: ClassroomTable
       AttributeDefinitions:
-        - AttributeName: roomNumber
-          AttributeType: N
+        - AttributeName: roomNum
+          AttributeType: S
       KeySchema:
-        - AttributeName: roomNumber
+        - AttributeName: roomNum
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
@@ -131,8 +131,34 @@ Resources:
           Properties:
             RestApiId: !Ref SchedulerApi
             Path: /getAvailableClass
-            Method: get
+            Method: post
       Role: !GetAtt GetAvailableClassFunctionRole.Arn
+  ClassroomCrudFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: API_Endpoints/
+      Handler: classroom_Schedule_Endpoints.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Events:
+        GetAllClassrooms:
+          Type: Api
+          Properties:
+            Path: /classrooms
+            Method: get
+        PostClassToClassroom:
+          Type: Api
+          Properties:
+            Path: /classroom/{roomNum}
+            Method: post
+        PostClassroom:
+          Type: Api
+          Properties:
+            Path: /classroom
+            Method: post
+
+      Role: !GetAtt ClassroomCrudFunctionRole.Arn
 
 
   AccountCrudFunctionRole:
@@ -196,7 +222,35 @@ Resources:
               - Effect: Allow
                 Action:
                   - dynamodb:GetItem
-                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomsTable"
+                  - dynamodb:Scan
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomTable"
+
+  ClassroomCrudFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AccountCrudFunctionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ClassroomTable"
 
 # Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
