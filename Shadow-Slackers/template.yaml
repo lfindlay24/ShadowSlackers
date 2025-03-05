@@ -145,16 +145,19 @@ Resources:
         GetAllClassrooms:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /classrooms
             Method: get
         PostClassToClassroom:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /classroom/{roomNum}
             Method: post
         PostClassroom:
           Type: Api
           Properties:
+            RestApiId: !Ref SchedulerApi
             Path: /classroom
             Method: post
 
