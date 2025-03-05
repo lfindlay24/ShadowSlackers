@@ -15,6 +15,11 @@ def lambda_handler(event, context):
     else:
         return {
             "statusCode": 405,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Method Not Allowed"
             }),
@@ -30,6 +35,11 @@ def login(event, context):
     if 'email' not in item or 'password' not in item:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Email and password are required"
             }),
@@ -40,6 +50,11 @@ def login(event, context):
     if 'Item' not in response:
         return {
             "statusCode": 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Item not found"
             }),
@@ -48,6 +63,11 @@ def login(event, context):
     if response['Item']['password'] != item['password']:
         return {
             "statusCode": 401,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Invalid password"
             }),
@@ -55,6 +75,11 @@ def login(event, context):
     
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Login successful",
             "item": response['Item']

@@ -19,16 +19,12 @@ function App() {
     }
   }, []);
 
-  const handleSignUp = (email, password) => {
-    return signup(email, password);
+  const handleSignUp = async (email, password) => {
+    return await signup(email, password);
   }
 
-  const handleLogin = (email, password) => {
-    login(email, password).then((response) => {
-      console.log('Login response:', response);
-    });
-    localStorage.setItem("userEmail", email);
-    setUserEmail(email);
+  const handleLogin = async (email, password) =>  {
+    return await login(email, password);
   };
 
   const logout = () => {

@@ -12,8 +12,7 @@ export default function Auth({ type, onAuth }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         let response = onAuth(formData.email, formData.password);
-        console.log('Auth response:',
-            response);
+        console.log('Auth response:', response);
     };
 
     return (
