@@ -17,6 +17,11 @@ def getAvailableClass(event, context):
     if 'day' not in item or 'timeStart' not in item or 'timeEnd' not in item:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "day, timeStart, and timeEnd are required"
             }),
@@ -45,6 +50,11 @@ def getAvailableClass(event, context):
     if len(availableRooms) == 0:
         return {
             "statusCode": 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "No available rooms",
                 "day": day,
@@ -55,6 +65,11 @@ def getAvailableClass(event, context):
     else:
         return {
             "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Available rooms found",
                 "availableRooms": availableRooms,

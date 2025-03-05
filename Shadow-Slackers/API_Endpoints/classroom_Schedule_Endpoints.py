@@ -28,6 +28,11 @@ def lambda_handler(event, context):
     else:
         return {
             "statusCode": 405,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Method Not Allowed"
             }),
@@ -39,6 +44,11 @@ def addClassroom(event, context):
     if not roomNum:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "roomNum is required"
             }),
@@ -50,6 +60,11 @@ def addClassroom(event, context):
     
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Classroom added successfully"
         }),
@@ -65,6 +80,11 @@ def addClassToClassroom(event, context):
     if 'roomNum' not in item or 'className' not in item or 'startTime' not in item or 'endTime' not in item or 'days' not in item:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "roomNum, className, startTime, endTime, and days are required"
             }),
@@ -77,6 +97,11 @@ def addClassToClassroom(event, context):
     if 'Item' not in response:
         return {
             "statusCode": 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": "Classroom not found"
             }),
@@ -90,6 +115,11 @@ def addClassToClassroom(event, context):
     except ValueError as e:
         return {
             "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            },
             "body": json.dumps({
                 "message": str(e)
             }),
@@ -99,6 +129,11 @@ def addClassToClassroom(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps({
             "message": "Class added successfully"
         }),
@@ -109,6 +144,11 @@ def getAllClassrooms(event, context):
     classrooms = response['Items']
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        },
         "body": json.dumps(classrooms, cls=DecimalEncoder),
     }
 
