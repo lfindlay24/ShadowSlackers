@@ -15,7 +15,7 @@ export default function Home() {
                 </p>
                 <Link
                     to="/search"
-                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 p-6"
                 >
                     Search For A Room
                 </Link>
