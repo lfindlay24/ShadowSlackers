@@ -1,12 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
-const mockRooms = [
-    { roomNumber: "010", day: "Monday", availableFrom: 8, until: 10.5 },
-    { roomNumber: "102", day: "Monday", availableFrom: 9, until: 12 },
-    { roomNumber: "203", day: "Tuesday", availableFrom: 13, until: 15 },
-    { roomNumber: "305", day: "Wednesday", availableFrom: 10, until: 12.5 },
-    { roomNumber: "312", day: "Friday", availableFrom: 8, until: 11 }
-]
+const API_URL = 'https://rpq5ewwiy6.execute-api.us-east-2.amazonaws.com/dev';
 
 const formatTime = (time) => {
     const hour = Math.floor(time);
@@ -19,13 +14,37 @@ const formatTime = (time) => {
 const AvailableRooms = () => {
     const { day, startTime, endTime } = useParams();
     const navigate = useNavigate();
+    const [availableRooms, setAvailableRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const availableRooms = mockRooms.filter(
-        (room) =>
-            room.day === day &&
-            room.availableFrom <= parseFloat(startTime) &&
-            room.until >= parseFloat(endTime)
-    );
+    useEffect(() => {
+        const fetchAvailableRooms = async () => {
+            try {
+                const response = await fetch(`${API_URL}/getAvailableClass`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        day,
+                        timeStart: parseFloat(startTime),
+                        timeEnd: parseFloat(endTime)
+                    }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setAvailableRooms(data.availableRooms);
+                } else {
+                    throw new Error(data.message || 'Failed to fetch rooms');
+                }
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAvailableRooms();
+    }, [day, startTime, endTime]);
 
     return (
         <div className='min-h-screen flex flex-col items-center justify-center p-6 bg-gray-100'>
@@ -36,22 +55,23 @@ const AvailableRooms = () => {
                 Showing available rooms for <strong>{day}</strong> from <strong>{formatTime(parseFloat(startTime))}</strong> to <strong>{formatTime(parseFloat(endTime))}</strong>.
             </p>
             <div className='mt-6'>
-                {availableRooms.length > 0 ? (
-                    <ul className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-4">
+                {loading ? (
+                    <p className='text-center text-gray-500'>Loading...</p>
+                ) : error ? (
+                    <p className='text-center text-red-500'>{error}</p>
+                ) : availableRooms.length > 0 ? (
+                    <ul className='max-w-lg mx-auto bg-white shadow-md rounded-lg p-4'>
                         {availableRooms.map((room) => (
                             <li
-                                key={room.roomNumber}
+                                key={room}
                                 className='p-3 border-b last:border-b-0 text-lg text-center'
                             >
-                                Room <strong>{room.roomNumber}</strong> (Available:{" "}
-                                {formatTime(room.availableFrom)} - {formatTime(room.until)})
+                                Room <strong>{room}</strong> from <strong>{formatTime(parseFloat(startTime))}</strong> to <strong>{formatTime(parseFloat(endTime))}</strong>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p className='text-center text-gray-500'>
-                        No available rooms for this time slot.
-                    </p>
+                    <p className='text-center text-gray-500'>No available rooms for this time slot.</p>
                 )}
             </div>
 
