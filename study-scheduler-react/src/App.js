@@ -8,6 +8,7 @@ import Schedule from './components/Schedule';
 import AvailableRooms from './components/AvailableRooms';
 import SearchAvailableRooms from './components/SearchAvailableRooms';
 import { AuthProvider } from './components/AuthContext';
+import SearchResults from './components/SearchResults';
 
 function App() {
   const [userEmail, setUserEmail] = useState(null);
@@ -35,6 +36,7 @@ function App() {
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/search" element={<SearchAvailableRooms />} />
           <Route path="/:day/:startTime/:endTime" element={<AvailableRooms />} />
+          <Route path="/search-results" element={<SearchResults />} />
         </Routes>
       </Router>
     </AuthProvider>

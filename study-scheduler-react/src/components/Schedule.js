@@ -77,8 +77,8 @@ export default function Schedule() {
         });
 
         if (requests.length > 0) {
-            const { day, startTime, endTime } = requests[0];
-            navigate(`/${day}/${startTime}/${endTime}`);
+            localStorage.setItem('roomRequests', JSON.stringify(requests));
+            navigate(`/search-results`);
         } else {
             alert("No room requests found. Please select time slots.");
         }
