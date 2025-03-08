@@ -1,4 +1,4 @@
-const API_URL = 'https://r4lndzkr95.execute-api.us-east-2.amazonaws.com/dev';
+const API_URL = 'https://rpq5ewwiy6.execute-api.us-east-2.amazonaws.com/dev';
 
 export const signup = async (email, password) => {
 
@@ -8,7 +8,7 @@ export const signup = async (email, password) => {
         body: JSON.stringify({ email, password })
     });
 
-    return await response.json();
+    return response.json();
 }
 
 export const login = async (email, password) => {
@@ -23,5 +23,5 @@ export const login = async (email, password) => {
         body: JSON.stringify(body)
     });
 
-    return await response.json();
+    return response.json();
 }

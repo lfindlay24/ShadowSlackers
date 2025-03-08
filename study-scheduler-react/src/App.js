@@ -7,7 +7,7 @@ import NavBar from './components/NavBar';
 import Schedule from './components/Schedule';
 import AvailableRooms from './components/AvailableRooms';
 import SearchAvailableRooms from './components/SearchAvailableRooms';
-import { login, signup } from './components/Api';
+import { AuthProvider } from './components/AuthContext';
 
 function App() {
   const [userEmail, setUserEmail] = useState(null);
@@ -19,31 +19,25 @@ function App() {
     }
   }, []);
 
-  const handleSignUp = async (email, password) => {
-    return await signup(email, password);
-  }
-
-  const handleLogin = async (email, password) =>  {
-    return await login(email, password);
-  };
-
   const logout = () => {
     localStorage.removeItem("userEmail");
     setUserEmail(null);
   };
 
   return (
-    <Router>
-      <NavBar userEmail={userEmail} logout={logout} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Auth type="login" onAuth={handleLogin} />} />
-        <Route path="/signup" element={<Auth type="signup" onAuth={handleSignUp} />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/search" element={<SearchAvailableRooms />} />
-        <Route path="/:day/:startTime/:endTime" element={<AvailableRooms />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <NavBar userEmail={userEmail} logout={logout} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Auth type="login" />} />
+          <Route path="/signup" element={<Auth type="signup" />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/search" element={<SearchAvailableRooms />} />
+          <Route path="/:day/:startTime/:endTime" element={<AvailableRooms />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
