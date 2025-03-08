@@ -22,7 +22,7 @@ export default function Schedule() {
     const [schedule, setSchedule] = useState({});
 
     useEffect(() => {
-        const storedSchedule = localStorage.getItem('userSchedule');
+        const storedSchedule = localStorage.getItem('roomSearchSchedule');
         if (storedSchedule) {
             setSchedule(JSON.parse(storedSchedule));
         }
@@ -30,7 +30,7 @@ export default function Schedule() {
 
     useEffect(() => {
         if (Object.keys(schedule).length > 0) {
-            localStorage.setItem("userSchedule", JSON.stringify(schedule));
+            localStorage.setItem("roomSearchSchedule", JSON.stringify(schedule));
         }
     }, [schedule]);
 
@@ -51,7 +51,7 @@ export default function Schedule() {
     return (
         <div className="min-h-screen p-6 bg-gray-100">
             <h1 className='text-3xl font-bold text-center text-blue-600 mb-4'>
-                Your Weekly Schedule
+                Select Times You Need A Room
             </h1>
 
             <div className='overflow-x-auto'>
@@ -74,11 +74,11 @@ export default function Schedule() {
                                     <td
                                         key={`${day}-${timeSlot}`}
                                         className={`p-2 border border-gray-300 cursor-pointer ${
-                                            schedule[`${day}-${timeSlot}`] ? 'bg-red-500 text-white' : 'bg-white'
+                                            schedule[`${day}-${timeSlot}`] ? 'bg-green-500 text-white' : 'bg-white'
                                         }`}
                                         onClick={() => toggleSlot(day, timeSlot)}
                                     >
-                                        {schedule[`${day}-${timeSlot}`] ? 'Busy' : ''}
+                                        {schedule[`${day}-${timeSlot}`] ? 'Need Room' : ''}
                                     </td>
                                 ))}
                             </tr>
