@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
-export default function Navbar({ userEmail, logout }) {
+export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const {userEmail, logoutUser} = useContext(AuthContext);
 
     return (
         <div className="bg-blue-600 p-4 shadow-md">
@@ -35,7 +37,7 @@ export default function Navbar({ userEmail, logout }) {
                             <Link to='/schedule' className='text-white hover:underline'>
                                 Schedule
                             </Link>
-                            <button onClick={logout} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>
+                            <button onClick={logoutUser} className='text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600'>
                                 Logout
                             </button>
                         </>

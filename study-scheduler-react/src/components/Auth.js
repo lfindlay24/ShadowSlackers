@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signup, login } from './Api';
+import { AuthContext } from './AuthContext';
 
-export default function Auth({ type, onAuth }) {
-    const navigate = useNavigate();
+export default function Auth({ type }) {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const { loginUser } = useContext(AuthContext);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -11,8 +15,25 @@ export default function Auth({ type, onAuth }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let response = onAuth(formData.email, formData.password);
-        console.log('Auth response:', response);
+        setError(null);
+
+        try {
+            const promise = type === 'signup' ? signup(formData.email, formData.password) : login(formData.email, formData.password);
+
+            promise.then((response) => {
+                if (response.message === "Item added successfully" || response.message === "Login successful") {
+                    loginUser(formData.email);
+                    navigate('/');
+                } else {
+                    setError("Authentication failed. Please try again.");
+                }
+            }).catch((error) => {
+                setError("Authentication failed. Please try again.");
+            })
+
+        } catch (err) {
+            setError("An error occured. Please try again.");
+        }
     };
 
     return (
@@ -21,6 +42,9 @@ export default function Auth({ type, onAuth }) {
                 <h2 className="text-2xl font-semibold text-center mb-4">
                     {type === 'login' ? 'Login' : 'Sign Up'}
                 </h2>
+
+                {error && <p className="text-red-500">{error}</p>}
+
                 <form onSubmit={handleSubmit}>
                     <input
                         type="email"
